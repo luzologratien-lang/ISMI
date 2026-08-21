@@ -29,3 +29,11 @@ group_by(category) %>%
 mutate(p_quarter = log(p_index) - log(lag(p_index))) %>%
 ungroup()
 
+# Calculate Expenditure Weights
+df_weights <- df_inflation %>%
+group_by(date) %>%
+mutate(total_exp = val_current[category == "Household final consumption expenditure"]) %>%
+ungroup() %>%
+filter( category != "Household final consumption expenditure", category != "Net expenditure abroad") %>%
+mutate(weight = val_current / total_exp)
+

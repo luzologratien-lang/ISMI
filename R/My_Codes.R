@@ -26,7 +26,7 @@ mutate(p_index = (val_current / val_constant) * 100)
 df_inflation <- df_prices %>%
 arrange(category, date) %>%
 group_by(category) %>%
-mutate(p_quarter = log(p_index) - log(lag(p_index))) %>%
+mutate(p_quarter = (log(p_index) - log(lag(p_index)))*100) %>%
 ungroup()
 
 # Calculate Expenditure Weights

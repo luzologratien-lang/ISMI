@@ -11,8 +11,8 @@ constant <- read_csv("3610012401_databaseLoadingData.csv")
 current %>% distinct(Prices)
 constant %>% distinct(Prices)
 
-# the 114 categories in the raw export are not flat, they're a hierarchy (e.g. "Housing" contains "Electricity", "Rent" etc as
-# sub-items). weights sum to ~ 198% if I just use them all as-is, so I need to pull the parent/child structure and keep only the
+# statcan's categories are not flat, they're a hierarchy (e.g. "Housing" contains "Electricity", "Rent" etc as
+# sub-items) weights sum to ~ 198% if I just use them all as-is, so I need to pull the parent/child structure and keep only the
 # most detailed (leaf) categories
 
 

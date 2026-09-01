@@ -204,9 +204,9 @@ ggplot(df_ismi, aes(x = as.Date(date), y = ISMI)) +
   geom_line(color = "#1f4e79", linewidth = 0.6) +
   labs(
     title = "Inflation Shock Momentum Index (ISMI) — Canada",
-    subtitle = "1991 Q2 - 2026 Q1, disaggregated HFCE categories\n(StatCan, table 36-10-0124-01)",
+    subtitle = "1991 Q2 - 2026 Q1, Disaggregated HFCE categories\n(StatCan, table 36-10-0124-01)",
     x = NULL,
-    y = "ISMI (positive share minus negative share)"
+    y = "Index"
   ) +
   scale_x_date(date_breaks = "5 years", date_labels = "%Y") +
   theme_minimal(base_size = 12) +

@@ -84,3 +84,6 @@ This chart covers 1991Q2 to 2026Q1, and it lines up well with Canada's known eco
 ![Impulse Response](figures/Chart2.png)
 
 Chart 2 splits the index into its positive and negative parts instead of just showing the difference. It shows that the 2022 peak came from a real, broad jump in the positive side — reaching about 69% of the consumption basket, not from the negative side simply disappearing. This matters: in theory, the index could peak just because negative momentum became rare, without much real positive pressure. That's not what happened here, positive momentum genuinely took over. The same chart shows the opposite pattern in 1991-93, where negative momentum dominates instead. Seeing both extremes behave as mirror images is a good sign the index is measuring something real and consistent, not just a quirk of how it's built.
+
+
+{% include chart.html %}

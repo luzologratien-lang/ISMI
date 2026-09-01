@@ -73,6 +73,7 @@ That is, the ISMI is the expenditure-weighted share of the consumption basket ex
 
 ## 4. Graphical Evidence
 
+### 4.1
 
 
 

@@ -18,6 +18,8 @@ Added together, these 101 categories come to exactly 100% of spending, and their
 
 ### 3.2. Price Index, Inflation Rates, and Expenditure Weights
 
+#### 3.2.1. Price Index Construction
+
 For each category *i* and quarter *t*, a category-level price index is constructed as the ratio of current-dollar to constant-dollar expenditure:
 
 $$
@@ -30,15 +32,33 @@ $$
 \pi_{i,t} = \ln(P_{i,t}) - \ln(P_{i,t-1})
 $$
 
-And the category's expenditure weight in the total consumption basket is:
+#### 3.2.2. Price Index Validation
+
+Before building the ISMI, I check that my own price index, built by summing the 101 categories, actually matches reality. To do this, I compare my own aggregate inflation against an inflation series Statistics Canada already publishes separately, in a different [Table 36-10-0106-01](https://doi.org/10.25318/3610010601-eng) (Gross domestic product price indexes, quarterly), which reports its own implicit price index for household consumption expenditure. This series comes from StatCan's own calculation so it acts as an independent reference point.
+The comparison is done Q4/Q4 meaning I measure annual inflation as the price change from the fourth quarter of one year to the fourth quarter of the next (for example, 2021Q4 to 2022Q4), rather than averaging across all four quarters. This is a standard way to turn quarterly data into a single annual inflation figure, and it lets me compare my own quarterly series and StatCan's on the exact same basis.
+
+#### 3.2.2 My calculation vs The Official StatCan Index
+
+![Impulse Response](figures/Chart3.png)
+
+The two lines are nearly identical across more than 40 years, through very different periods (the high inflation of the early 1980s, the low, stable years of the 2000s-2010s, and the 2022 spike). The only small gaps appear in 1983-1984 and briefly around 2001-2002; from the 2000s onward the two are almost indistinguishable, and the 2022 peak is captured at nearly the same level (about 5.5-5.7%) by both. 
+Their close agreement gives good reason to trust the pipeline (hierarchy resolution, price index, aggregation) before using it to build the ISMI. 
+
+
+#### 3.2.3. Expenditure Weight Construction 
+
+The category's expenditure weight in the total consumption basket is:
 
 $$
 w_{i,t} = \frac{\text{Current-dollar expenditure}_{i,t}}{\text{Total current-dollar expenditure}_t}, \qquad \sum_i w_{i,t} = 1
 $$
 
+where total current-dollar expenditure is the sum across all 101 leaf categories. 
+
+
 ### 3.3. Rolling trend-inflation model and Inflation Shocks
 
-Following the original methodology, each category's inflation rate is modeled as a simple first-order autoregressive process. At each quarter *t* le model 
+Following the original methodology, each category's inflation rate is modeled as a simple first-order autoregressive process. At each quarter *t* 
 
 $$
 \pi_{i,s} = \alpha_i + \rho_i \cdot \pi_{i,s-1} + \varepsilon_{i,s}
@@ -73,23 +93,15 @@ That is, the ISMI is the expenditure-weighted share of the consumption basket ex
 
 ## 4. Graphical Evidence
 
-### 4.1. Validation of Price Index
-
-
-Before building the ISMI, I check that my own price index, built by summing the 101 categories, actually matches reality. To do this, I compare my own aggregate inflation against an inflation series Statistics Canada already publishes separately, in a different [Table 36-10-0106-01](https://doi.org/10.25318/3610010601-eng) (Gross domestic product price indexes, quarterly), which reports its own implicit price index for household consumption expenditure. This series comes from StatCan's own calculation, not ours, so it acts as an independent reference point.
-The comparison is done Q4/Q4 meaning we measure annual inflation as the price change from the fourth quarter of one year to the fourth quarter of the next (for example, 2021Q4 to 2022Q4), rather than averaging across all four quarters. This is a standard way to turn quarterly data into a single annual inflation figure, and it lets us compare our own quarterly series and StatCan's on the exact same basis.
-The two lines are nearly identical across more than 40 years, through very different periods (the high inflation of the early 1980s, the low, stable years of the 2000s-2010s, and the 2022 spike). The only small gaps appear in 1983-1984 and briefly around 2001-2002; from the 2000s onward the two are almost indistinguishable, and the 2022 peak is captured at nearly the same level (about 5.5-5.7%) by both.
-This comparison matters because it is an external, uncalibrated check: nothing was adjusted to make the two lines match. Their close agreement gives good reason to trust the pipeline (hierarchy resolution, price index, aggregation) before using it to build the ISMI. A large gap would have meant going back to find an error first, rather than trusting the ISMI's results.
-
-### 4.2. Inflation Shock Momentum Index (ISMI) - Canada
+### 4.1. Inflation Shock Momentum Index (ISMI) - Canada
 
 ![Impulse Response](figures/Chart1.png)
 
 This chart covers 1991Q2 to 2026Q1, and it lines up well with Canada's known economic history, even though nothing was adjusted to force that outcome. The index hits its lowest point ever in 1991-1993, matching the disinflation that followed the 1990-91 recession. There's a smaller dip around 2014-2016, likely tied to the oil price crash and its impact on Canada's resource-heavy provinces. The index's highest point ever is in 2022Q1 (+0.669), matching the post-pandemic inflation surge, the strongest reading in over 30 years of data. Between these episodes, from about 1994 to 2019, the index stays close to zero, which fits with two decades of low, stable inflation.
 
-### 4.3. ISMI : Positive vs Negative Share Decomposition
+### 4.2. ISMI : Positive vs Negative Share Decomposition
 
 ![Impulse Response](figures/Chart2.png)
 
-Chart 2 splits the index into its positive and negative parts instead of just showing the difference. It shows that the 2022 peak came from a real, broad jump in the positive side — reaching about 69% of the consumption basket, not from the negative side simply disappearing. This matters: in theory, the index could peak just because negative momentum became rare, without much real positive pressure. That's not what happened here, positive momentum genuinely took over. The same chart shows the opposite pattern in 1991-93, where negative momentum dominates instead. Seeing both extremes behave as mirror images is a good sign the index is measuring something real and consistent, not just a quirk of how it's built.
+Chart 2 splits the index into its positive and negative parts instead of just showing the difference. It shows that the 2022 peak came from a real, broad jump in the positive side, reaching about 69% of the consumption basket, not from the negative side simply disappearing. This matters: in theory, the index could peak just because negative momentum became rare, without much real positive pressure. That's not what happened here, positive momentum genuinely took over. The same chart shows the opposite pattern in 1991-93, where negative momentum dominates instead. Seeing both extremes behave as mirror images is a good sign the index is measuring something real and consistent, not just a quirk of how it's built.
 

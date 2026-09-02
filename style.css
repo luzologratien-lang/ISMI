@@ -1,33 +1,24 @@
-/* =========================
-   General page
-   ========================= */
+/* General page */
 
 body {
     margin: 0;
     padding: 0;
-
     font-family: Arial, Helvetica, sans-serif;
-
     background-color: #ffffff;
     color: #222222;
 }
 
 
-/* =========================
-   Main container
-   ========================= */
+/* Main container */
 
 main {
     max-width: 1200px;
     margin: 0 auto;
-
     padding: 40px 30px 30px 30px;
 }
 
 
-/* =========================
-   Header
-   ========================= */
+/* Header */
 
 header {
     margin-bottom: 25px;
@@ -35,18 +26,14 @@ header {
 
 h1 {
     margin: 0 0 10px 0;
-
     font-size: 30px;
     font-weight: 600;
-
     line-height: 1.3;
 }
 
 header p {
     margin: 5px 0;
-
     color: #666666;
-
     font-size: 15px;
 }
 
@@ -56,9 +43,7 @@ header p:first-of-type {
 }
 
 
-/* =========================
-   Chart
-   ========================= */
+/* Chart */
 
 section {
     width: 100%;
@@ -67,35 +52,26 @@ section {
 #chart {
     width: 100%;
     height: 600px;
-
     margin-top: 10px;
 }
 
 
-/* =========================
-   Footer
-   ========================= */
+/* Footer */
 
 footer {
     margin-top: 15px;
-
     border-top: 1px solid #eeeeee;
-
     padding-top: 12px;
 }
 
 footer p {
     margin: 0;
-
     font-size: 13px;
-
     color: #777777;
 }
 
 
-/* =========================
-   Mobile
-   ========================= */
+/* Mobile */
 
 @media (max-width: 700px) {
 

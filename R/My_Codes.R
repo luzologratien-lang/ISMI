@@ -308,8 +308,8 @@ arrange(year) %>%
 mutate(official_inflation = log(VALUE) - log(lag(VALUE))) %>%
 select(year, official_inflation)
 
-# our own aggregate inflation - already computed as aggregate_inflation in df_aggregate (built earlier for chart 3). Summing 4 consecutive quarterly log inflation
-# rates gives exactly the Q4/Q4 annual log inflation, since the middle terms cancel out
+# our own aggregate inflation - already computed as aggregate_inflation in df_aggregate (built earlier for chart 3). Summing 4 
+# consecutive quarterly log inflation rates gives exactly the Q4/Q4 annual log inflation, since the middle terms cancel out
 own_annual <- df_aggregate %>%
 mutate(year = as.integer(substr(as.character(date), 1, 4))) %>%
 group_by(year) %>%

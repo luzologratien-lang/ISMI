@@ -75,7 +75,7 @@ That is, the ISMI is the expenditure-weighted share of the consumption basket ex
 
 ### 4.1. Inflation Shock Momentum Index (ISMI) - Canada
 
-{% include chart.html %}
+![Impulse Response](figures/Chart1.png)
 
 [**→ Open the interactive chart**](https://luzologratien-lang.github.io/ISMI/)
 

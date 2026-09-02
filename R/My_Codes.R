@@ -115,6 +115,7 @@ df_final <- df_final %>%
 df_final %>% group_by(date) %>% summarise(s = sum(category_weight)) %>% pull(s) %>% summary()
 df_final %>% filter(is.nan(price_index)) %>% count(category)
 
+
 # -----------------------------------------------
 # rolling AR(1) trend model -> inflation shocks
 # -----------------------------------------------
@@ -279,5 +280,66 @@ ggplot(df_compare, aes(x = as.Date(date))) +
         plot.title = element_text(face = "bold"),
         plot.subtitle = element_text(size = 9, color = "grey30"))
 
-# next: test if ISMI actually predicts future inflation (t+4, t+8,
-# t+12 quarters), like Lansing & Shapiro do for the US
+
+# ------------
+# Additional 
+# ------------
+
+# validate own aggregate inflation against StatCan's own published index for household consumption expenditure
+# (table 36-10-0106-01, "Gross domestic product price indexes, quarterly" - implicit price index)
+
+
+official <- read_csv(file.choose())
+
+# each row is already exactly the series we want (Household final consumption expenditure, Implicit price index) since
+# that's what we filtered to on StatCan's website.
+
+official_clean <- official %>%
+select(REF_DATE, VALUE) %>%
+mutate(
+year  = as.integer(substr(REF_DATE, 1, 4)),
+month = as.integer(substr(REF_DATE, 6, 7))   # REF_DATE is YYYY-MM
+)
+
+# Q4/Q4 annual inflation: keep October (month 10) of each year, then take the log change from one year's Q4 to the next
+official_annual <- official_clean %>%
+filter(month == 10) %>%
+arrange(year) %>%
+mutate(official_inflation = log(VALUE) - log(lag(VALUE))) %>%
+select(year, official_inflation)
+
+# our own aggregate inflation - already computed as aggregate_inflation in df_aggregate (built earlier for chart 3). Summing 4 consecutive quarterly log inflation
+# rates gives exactly the Q4/Q4 annual log inflation, since the middle terms cancel out
+own_annual <- df_aggregate %>%
+mutate(year = as.integer(substr(as.character(date), 1, 4))) %>%
+group_by(year) %>%
+summarise(own_inflation = sum(aggregate_inflation, na.rm = TRUE)) %>%
+filter(year >= 1982)   # 1981 is incomplete (no prior quarter for Q1)
+
+# merge both annual series on the same basis
+comparison_annual <- own_annual %>%
+left_join(official_annual, by = "year") %>%
+filter(!is.na(official_inflation))
+
+head(comparison_annual)
+nrow(comparison_annual)   # 44 years, 1982-2025
+
+# plot both series together
+comparison_annual %>%
+pivot_longer(cols = c(own_inflation, official_inflation),
+names_to = "source", values_to = "inflation") %>%
+mutate(source = recode(source,
+                          own_inflation = "My aggregate inflation (101 categories)",
+                          official_inflation = "Official StatCan aggregate")) %>%
+ggplot(aes(x = year, y = inflation, color = source)) +
+geom_line(linewidth = 0.8) +
+geom_point(size = 1.5) +
+scale_color_manual(values = c("My aggregate inflation (101 categories)" = "#1f4e79",
+                                 "Official StatCan aggregate" = "#c0392b")) +
+labs(
+    title = "Annual inflation — my aggregate inflation vs the official StatCan aggregate",
+    subtitle = "Q4/Q4 comparison, household consumption expenditure",
+    x = NULL, y = "Annual inflation (log)", color = NULL
+  ) +
+theme_minimal(base_size = 12) +
+theme(legend.position = "top")

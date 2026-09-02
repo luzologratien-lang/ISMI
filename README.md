@@ -78,7 +78,7 @@ $$
 
 Lansing and Shapiro use a 120-month (10-year) rolling window on monthly U.S. data. The Canadian data are quarterly, so the window was scaled to 40 quarters (10 years), preserving the same historical span rather than the same number of observations. Because the model requires a full 40-quarter window of history before it can generate its first forecast, the usable shock series begins in 1991Q2 (1981Q1 + 40 quarters) rather than at the start of the raw data.
 
-### 3.4. Index Construction
+### 3.4. ISMI Index Construction
 
 A category is classified as exhibiting positive momentum at quarter *t* if it has just recorded three consecutive quarters of positive shocks (at *t*, *t−1*, and *t−2*), and negative momentum if it has recorded three consecutive quarters of negative shocks. This is a direct translation of the original three-consecutive-months rule to a three-consecutive-quarters rule, reflecting the change in data frequency rather than a change in the underlying logic.[^1]
 [^1]:Across the sample, 11.8% of category-quarters exhibited positive momentum and 21.1% negative momentum, a similar order of magnitude to the 20% positive and 15% negative Lansing & Shapiro find for the US, with the difference explained by country, period, and quarterly vs. monthly frequency.

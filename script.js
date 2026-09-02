@@ -1,281 +1,210 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     const chart = document.getElementById("chart");
 
-    Papa.parse("Data/Canadian_ISMI_data.csv", {
+    try {
 
-        download: true,
-        header: false,
-        skipEmptyLines: true,
+        // Load the CSV directly from GitHub
+        const response = await fetch(
+            "https://raw.githubusercontent.com/luzologratien-lang/ISMI/main/Data/Canadian_ISMI_data.csv"
+        );
 
-        complete: function (results) {
+        if (!response.ok) {
+            throw new Error("CSV could not be loaded.");
+        }
 
-            console.log("CSV successfully loaded.");
-            console.log(results.data);
+        const csvText = await response.text();
 
-            const rows = results.data;
+        console.log("CSV loaded successfully.");
+        console.log(csvText.substring(0, 300));
 
-            // Remove the header row
-            rows.shift();
+        // Parse CSV
+        const results = Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true
+        });
 
-            // Convert the CSV into usable observations
-            const validRows = rows
-                .map(row => {
+        console.log("Parsed data:", results.data);
 
-                    return {
-                        date: quarterToDate(row[1]),
-                        positive: parseFloat(row[2]),
-                        negative: parseFloat(row[3]),
-                        ismi: parseFloat(row[4])
-                    };
+        // Create observations
+        const data = results.data
+            .map(row => {
 
-                })
-                .filter(row =>
-                    row.date !== null &&
-                    Number.isFinite(row.ismi)
-                );
+                const match = String(row.date)
+                    .trim()
+                    .match(/(\d{4})\s*Q([1-4])/);
 
+                if (!match) return null;
 
-            console.log("Number of observations:", validRows.length);
-            console.log("First observation:", validRows[0]);
+                const year = Number(match[1]);
+                const quarter = Number(match[2]);
 
+                const month = (quarter - 1) * 3;
 
-            // Stop if no data were found
-            if (validRows.length === 0) {
+                return {
+                    date: new Date(year, month, 1),
+                    ismi: Number(row.ISMI),
+                    positive: Number(row.positive_share),
+                    negative: Number(row.negative_share)
+                };
 
-                chart.innerHTML =
-                    "<p>Unable to find valid ISMI observations.</p>";
-
-                return;
-            }
-
-
-            // Extract the series
-            const dates = validRows.map(row => row.date);
-
-            const ismi = validRows.map(row => row.ismi);
-
-            const positive = validRows.map(row => row.positive);
-
-            const negative = validRows.map(row => row.negative);
-
-
-            // ------------------------------------------------
-            // ISMI
-            // ------------------------------------------------
-
-            const traceISMI = {
-
-                x: dates,
-                y: ismi,
-
-                name: "ISMI",
-
-                type: "scatter",
-                mode: "lines",
-
-                line: {
-                    color: "#1f4e79",
-                    width: 2
-                }
-
-            };
-
-
-            // ------------------------------------------------
-            // Positive share
-            // ------------------------------------------------
-
-            const tracePositive = {
-
-                x: dates,
-                y: positive,
-
-                name: "Positive share",
-
-                type: "scatter",
-                mode: "lines",
-
-                line: {
-                    color: "#c0392b",
-                    width: 1,
-                    dash: "dot"
-                },
-
-                visible: "legendonly"
-
-            };
-
-
-            // ------------------------------------------------
-            // Negative share
-            // ------------------------------------------------
-
-            const traceNegative = {
-
-                x: dates,
-                y: negative,
-
-                name: "Negative share",
-
-                type: "scatter",
-                mode: "lines",
-
-                line: {
-                    color: "#2874a6",
-                    width: 1,
-                    dash: "dot"
-                },
-
-                visible: "legendonly"
-
-            };
-
-
-            // ------------------------------------------------
-            // Chart layout
-            // ------------------------------------------------
-
-            const layout = {
-
-                xaxis: {
-
-                    type: "date",
-
-                    rangeslider: {
-                        visible: true
-                    }
-
-                },
-
-                yaxis: {
-
-                    title: "ISMI (positive share − negative share)",
-
-                    zeroline: true
-
-                },
-
-                legend: {
-
-                    orientation: "h",
-
-                    y: 1.08
-
-                },
-
-                margin: {
-
-                    t: 40,
-                    r: 30,
-                    b: 70,
-                    l: 80
-
-                },
-
-                hovermode: "x unified",
-
-                shapes: [
-
-                    {
-
-                        type: "line",
-
-                        x0: dates[0],
-                        x1: dates[dates.length - 1],
-
-                        y0: 0,
-                        y1: 0,
-
-                        line: {
-
-                            color: "grey",
-                            width: 1,
-                            dash: "dot"
-
-                        }
-
-                    }
-
-                ]
-
-            };
-
-
-            // ------------------------------------------------
-            // Chart configuration
-            // ------------------------------------------------
-
-            const config = {
-
-                responsive: true,
-
-                displaylogo: false
-
-            };
-
-
-            // ------------------------------------------------
-            // Create the chart
-            // ------------------------------------------------
-
-            Plotly.newPlot(
-
-                "chart",
-
-                [
-                    traceISMI,
-                    tracePositive,
-                    traceNegative
-                ],
-
-                layout,
-
-                config
-
+            })
+            .filter(row =>
+                row !== null &&
+                Number.isFinite(row.ismi)
             );
 
-        },
+        console.log("Number of observations:", data.length);
+        console.log("First observation:", data[0]);
+        console.log("Last observation:", data[data.length - 1]);
 
-
-        error: function (error) {
-
-            console.error(error);
-
-            chart.innerHTML =
-                "<p>Could not load the ISMI data.</p>";
-
+        if (data.length === 0) {
+            chart.innerHTML = "<p>No valid data found.</p>";
+            return;
         }
 
-    });
+        // -----------------------------
+        // ISMI
+        // -----------------------------
 
+        const ismiTrace = {
+            x: data.map(d => d.date),
+            y: data.map(d => d.ismi),
 
-    // ------------------------------------------------
-    // Convert "1991 Q2" → JavaScript date
-    // ------------------------------------------------
+            type: "scatter",
+            mode: "lines",
 
-    function quarterToDate(q) {
+            name: "ISMI",
 
-        if (!q) {
-            return null;
-        }
+            line: {
+                width: 2
+            }
+        };
 
-        const match = String(q)
-            .trim()
-            .match(/(\d{4})\s*Q([1-4])/i);
+        // -----------------------------
+        // Positive share
+        // -----------------------------
 
-        if (!match) {
-            return null;
-        }
+        const positiveTrace = {
+            x: data.map(d => d.date),
+            y: data.map(d => d.positive),
 
-        const year = parseInt(match[1]);
+            type: "scatter",
+            mode: "lines",
 
-        const quarter = parseInt(match[2]);
+            name: "Positive share",
 
-        const month = (quarter - 1) * 3;
+            line: {
+                width: 1,
+                dash: "dot"
+            },
 
-        return new Date(year, month, 1);
+            visible: "legendonly"
+        };
 
+        // -----------------------------
+        // Negative share
+        // -----------------------------
+
+        const negativeTrace = {
+            x: data.map(d => d.date),
+            y: data.map(d => d.negative),
+
+            type: "scatter",
+            mode: "lines",
+
+            name: "Negative share",
+
+            line: {
+                width: 1,
+                dash: "dot"
+            },
+
+            visible: "legendonly"
+        };
+
+        // -----------------------------
+        // Chart layout
+        // -----------------------------
+
+        const layout = {
+
+            title: false,
+
+            height: 600,
+
+            xaxis: {
+                type: "date",
+
+                rangeslider: {
+                    visible: true
+                },
+
+                title: "Date"
+            },
+
+            yaxis: {
+                title: "ISMI",
+                zeroline: true
+            },
+
+            hovermode: "x unified",
+
+            legend: {
+                orientation: "h"
+            },
+
+            margin: {
+                l: 80,
+                r: 30,
+                t: 40,
+                b: 100
+            },
+
+            shapes: [
+                {
+                    type: "line",
+
+                    x0: data[0].date,
+                    x1: data[data.length - 1].date,
+
+                    y0: 0,
+                    y1: 0,
+
+                    line: {
+                        width: 1,
+                        dash: "dot"
+                    }
+                }
+            ]
+        };
+
+        const config = {
+            responsive: true,
+            displaylogo: false
+        };
+
+        // -----------------------------
+        // Draw chart
+        // -----------------------------
+
+        Plotly.newPlot(
+            chart,
+            [
+                ismiTrace,
+                positiveTrace,
+                negativeTrace
+            ],
+            layout,
+            config
+        );
+
+    } catch (error) {
+
+        console.error("ERROR:", error);
+
+        chart.innerHTML =
+            "<p>There was an error loading the data. Check the browser console.</p>";
     }
 
 });

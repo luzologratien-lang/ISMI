@@ -15,18 +15,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const csvText = await response.text();
 
-        console.log("CSV loaded successfully.");
-        console.log(csvText.substring(0, 300));
-
         // Parse CSV
         const results = Papa.parse(csvText, {
             header: true,
             skipEmptyLines: true
         });
 
-        console.log("Parsed data:", results.data);
-
-        // Create observations
+        // Convert the data
         const data = results.data
             .map(row => {
 
@@ -54,21 +49,20 @@ document.addEventListener("DOMContentLoaded", async function () {
                 Number.isFinite(row.ismi)
             );
 
-        console.log("Number of observations:", data.length);
-        console.log("First observation:", data[0]);
-        console.log("Last observation:", data[data.length - 1]);
-
         if (data.length === 0) {
             chart.innerHTML = "<p>No valid data found.</p>";
             return;
         }
 
-        // -----------------------------
+
+        // =============================
         // ISMI
-        // -----------------------------
+        // =============================
 
         const ismiTrace = {
+
             x: data.map(d => d.date),
+
             y: data.map(d => d.ismi),
 
             type: "scatter",
@@ -77,16 +71,24 @@ document.addEventListener("DOMContentLoaded", async function () {
             name: "ISMI",
 
             line: {
-                width: 2
-            }
+                width: 2.5
+            },
+
+            hovertemplate:
+                "<b>%{x|%Y Q%q}</b>" +
+                "<br>ISMI: %{y:.3f}" +
+                "<extra></extra>"
         };
 
-        // -----------------------------
+
+        // =============================
         // Positive share
-        // -----------------------------
+        // =============================
 
         const positiveTrace = {
+
             x: data.map(d => d.date),
+
             y: data.map(d => d.positive),
 
             type: "scatter",
@@ -95,19 +97,27 @@ document.addEventListener("DOMContentLoaded", async function () {
             name: "Positive share",
 
             line: {
-                width: 1,
+                width: 1.2,
                 dash: "dot"
             },
 
-            visible: "legendonly"
+            visible: "legendonly",
+
+            hovertemplate:
+                "<b>%{x|%Y Q%q}</b>" +
+                "<br>Positive share: %{y:.3f}" +
+                "<extra></extra>"
         };
 
-        // -----------------------------
+
+        // =============================
         // Negative share
-        // -----------------------------
+        // =============================
 
         const negativeTrace = {
+
             x: data.map(d => d.date),
+
             y: data.map(d => d.negative),
 
             type: "scatter",
@@ -116,95 +126,155 @@ document.addEventListener("DOMContentLoaded", async function () {
             name: "Negative share",
 
             line: {
-                width: 1,
+                width: 1.2,
                 dash: "dot"
             },
 
-            visible: "legendonly"
+            visible: "legendonly",
+
+            hovertemplate:
+                "<b>%{x|%Y Q%q}</b>" +
+                "<br>Negative share: %{y:.3f}" +
+                "<extra></extra>"
         };
 
-        // -----------------------------
-        // Chart layout
-        // -----------------------------
+
+        // =============================
+        // Layout
+        // =============================
 
         const layout = {
 
-            title: false,
-
             height: 600,
 
+            plot_bgcolor: "#ffffff",
+
+            paper_bgcolor: "#ffffff",
+
             xaxis: {
+
                 type: "date",
 
-                rangeslider: {
-                    visible: true
-                },
+                title: "Date",
 
-                title: "Date"
+                tickformat: "%Y",
+
+                dtick: "M60",
+
+                showgrid: true,
+
+                gridcolor: "#eeeeee",
+
+                rangeslider: {
+                    visible: true,
+                    thickness: 0.08
+                }
             },
 
             yaxis: {
+
                 title: "ISMI",
-                zeroline: true
+
+                showgrid: true,
+
+                gridcolor: "#eeeeee",
+
+                zeroline: true,
+
+                zerolinewidth: 1.5
+            },
+
+            legend: {
+
+                orientation: "h",
+
+                x: 0,
+
+                y: 1.08
             },
 
             hovermode: "x unified",
 
-            legend: {
-                orientation: "h"
-            },
-
             margin: {
+
                 l: 80,
+
                 r: 30,
-                t: 40,
-                b: 100
+
+                t: 50,
+
+                b: 90
             },
 
             shapes: [
+
                 {
                     type: "line",
 
                     x0: data[0].date,
+
                     x1: data[data.length - 1].date,
 
                     y0: 0,
+
                     y1: 0,
 
                     line: {
+
                         width: 1,
+
                         dash: "dot"
                     }
                 }
             ]
         };
 
+
+        // =============================
+        // Chart configuration
+        // =============================
+
         const config = {
+
             responsive: true,
-            displaylogo: false
+
+            displaylogo: false,
+
+            modeBarButtonsToRemove: [
+                "lasso2d",
+                "select2d"
+            ]
         };
 
-        // -----------------------------
+
+        // =============================
         // Draw chart
-        // -----------------------------
+        // =============================
 
         Plotly.newPlot(
+
             chart,
+
             [
                 ismiTrace,
                 positiveTrace,
                 negativeTrace
             ],
+
             layout,
+
             config
+
         );
 
-    } catch (error) {
+    }
 
-        console.error("ERROR:", error);
+    catch (error) {
+
+        console.error(error);
 
         chart.innerHTML =
-            "<p>There was an error loading the data. Check the browser console.</p>";
+            "<p>There was an error loading the data.</p>";
     }
 
 });

@@ -78,6 +78,7 @@ That is, the ISMI is the expenditure-weighted share of the consumption basket ex
 [**→ Open the interactive chart**](https://luzologratien-lang.github.io/ISMI/)
 
 ![Impulse Response](figures/Chart1.png)
+
 This chart covers 1991Q2 to 2026Q1, and it lines up well with Canada's known economic history, even though nothing was adjusted to force that outcome. The index hits its lowest point ever in 1991-1993, matching the disinflation that followed the 1990-91 recession. There's a smaller dip around 2014-2016, likely tied to the oil price crash and its impact on Canada's resource-heavy provinces. The index's highest point ever is in 2022Q1 (+0.669), matching the post-pandemic inflation surge, the strongest reading in over 30 years of data. Between these episodes, from about 1994 to 2019, the index stays close to zero, which fits with two decades of low, stable inflation.
 
 ### 4.2. ISMI : Positive vs Negative Share Decomposition

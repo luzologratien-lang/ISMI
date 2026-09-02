@@ -5,80 +5,65 @@ document.addEventListener("DOMContentLoaded", function () {
     Papa.parse("Data/Canadian_ISMI_data.csv", {
 
         download: true,
-        header: true,
-        dynamicTyping: true,
+        header: false,
         skipEmptyLines: true,
 
         complete: function (results) {
 
-            console.log("CSV loaded:", results);
+            console.log("CSV successfully loaded.");
+            console.log(results.data);
 
-            // Clean column names
-            const rows = results.data.map(row => {
+            const rows = results.data;
 
-                const cleanRow = {};
+            // Remove the header row
+            rows.shift();
 
-                Object.keys(row).forEach(key => {
-                    cleanRow[key.trim()] = row[key];
-                });
-
-                return cleanRow;
-            });
-
-            console.log("First row:", rows[0]);
-            console.log("Columns:", Object.keys(rows[0] || {}));
-
-            // Keep rows containing a date and ISMI
+            // Convert the CSV into usable observations
             const validRows = rows
-                .filter(row =>
-                    row.date !== undefined &&
-                    row.date !== "" &&
-                    row.ISMI !== undefined &&
-                    row.ISMI !== ""
-                )
-                .map(row => ({
+                .map(row => {
 
-                    date: quarterToDate(String(row.date).trim()),
+                    return {
+                        date: quarterToDate(row[1]),
+                        positive: parseFloat(row[2]),
+                        negative: parseFloat(row[3]),
+                        ismi: parseFloat(row[4])
+                    };
 
-                    ismi: Number(row.ISMI),
-
-                    positive: Number(row.positive_share),
-
-                    negative: Number(row.negative_share)
-
-                }))
+                })
                 .filter(row =>
                     row.date !== null &&
                     Number.isFinite(row.ismi)
                 );
 
 
-            // Check whether data were actually found
+            console.log("Number of observations:", validRows.length);
+            console.log("First observation:", validRows[0]);
+
+
+            // Stop if no data were found
             if (validRows.length === 0) {
 
-                chart.innerHTML = `
-                    <p style="color:red;">
-                        No valid data were found in the CSV file.
-                    </p>
-                `;
+                chart.innerHTML =
+                    "<p>Unable to find valid ISMI observations.</p>";
 
-                console.error("No valid rows found.");
                 return;
             }
 
 
-            console.log("Valid rows:", validRows.length);
-            console.log("First valid row:", validRows[0]);
-
-
-            // Extract data
+            // Extract the series
             const dates = validRows.map(row => row.date);
+
             const ismi = validRows.map(row => row.ismi);
+
             const positive = validRows.map(row => row.positive);
+
             const negative = validRows.map(row => row.negative);
 
 
+            // ------------------------------------------------
             // ISMI
+            // ------------------------------------------------
+
             const traceISMI = {
 
                 x: dates,
@@ -97,7 +82,10 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
 
+            // ------------------------------------------------
             // Positive share
+            // ------------------------------------------------
+
             const tracePositive = {
 
                 x: dates,
@@ -119,7 +107,10 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
 
+            // ------------------------------------------------
             // Negative share
+            // ------------------------------------------------
+
             const traceNegative = {
 
                 x: dates,
@@ -141,10 +132,11 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
 
-            // Layout
-            const layout = {
+            // ------------------------------------------------
+            // Chart layout
+            // ------------------------------------------------
 
-                title: "",
+            const layout = {
 
                 xaxis: {
 
@@ -210,7 +202,10 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
 
-            // Configuration
+            // ------------------------------------------------
+            // Chart configuration
+            // ------------------------------------------------
+
             const config = {
 
                 responsive: true,
@@ -220,16 +215,24 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
 
-            // Create chart
+            // ------------------------------------------------
+            // Create the chart
+            // ------------------------------------------------
+
             Plotly.newPlot(
+
                 "chart",
+
                 [
                     traceISMI,
                     tracePositive,
                     traceNegative
                 ],
+
                 layout,
+
                 config
+
             );
 
         },
@@ -237,38 +240,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
         error: function (error) {
 
-            console.error("CSV loading error:", error);
+            console.error(error);
 
-            chart.innerHTML = `
-                <p style="color:red;">
-                    Could not load Data/Canadian_ISMI_data.csv.
-                </p>
-            `;
+            chart.innerHTML =
+                "<p>Could not load the ISMI data.</p>";
 
         }
 
     });
 
 
-    // Convert "1991 Q2" into a JavaScript date
+    // ------------------------------------------------
+    // Convert "1991 Q2" → JavaScript date
+    // ------------------------------------------------
+
     function quarterToDate(q) {
 
         if (!q) {
             return null;
         }
 
-        const match = q.match(/(\d{4})\s*Q([1-4])/i);
+        const match = String(q)
+            .trim()
+            .match(/(\d{4})\s*Q([1-4])/i);
 
         if (!match) {
             return null;
         }
 
         const year = parseInt(match[1]);
+
         const quarter = parseInt(match[2]);
 
         const month = (quarter - 1) * 3;
 
         return new Date(year, month, 1);
+
     }
 
 });

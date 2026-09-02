@@ -53,8 +53,7 @@ $$
 w_{i,t} = \frac{\text{Current-dollar expenditure}_{i,t}}{\text{Total current-dollar expenditure}_t}, \qquad \sum_i w_{i,t} = 1
 $$
 
-where total current-dollar expenditure is the sum across all 101 leaf categories. 
-
+This was confirmed: the 101 category weights sum to exactly 1 in every quarter of the sample. 
 
 ### 3.3. Rolling trend-inflation model and Inflation Shocks
 

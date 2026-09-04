@@ -79,8 +79,7 @@ Lansing and Shapiro use a 120-month (10-year) rolling window on monthly U.S. dat
 
 ### 3.4. ISMI Index Construction
 
-A category is classified as exhibiting positive momentum at quarter *t* if it has just recorded three consecutive quarters of positive shocks (at *t*, *t−1*, and *t−2*), and negative momentum if it has recorded three consecutive quarters of negative shocks. This is a direct translation of the original three-consecutive-months rule to a three-consecutive-quarters rule, reflecting the change in data frequency rather than a change in the underlying logic.[^1]
-[^1]:Across the sample, 11.8% of category-quarters exhibited positive momentum and 21.1% negative momentum, a similar order of magnitude to the 20% positive and 15% negative Lansing & Shapiro find for the US, with the difference explained by country, period, and quarterly vs. monthly frequency.
+A category is classified as exhibiting positive momentum at quarter *t* if it has just recorded three consecutive quarters of positive shocks (at *t*, *t−1*, and *t−2*), and negative momentum if it has recorded three consecutive quarters of negative shocks. This is a direct translation of the original three-consecutive-months rule to a three-consecutive-quarters rule, reflecting the change in data frequency rather than a change in the underlying logic. Across the sample, 11.8% of category-quarters exhibited positive momentum and 21.1% negative momentum, a similar order of magnitude to the 20% positive and 15% negative Lansing & Shapiro find for the US, with the difference explained by country, period, and quarterly vs. monthly frequency.
 
 The final index aggregates the category-level momentum signals using each category's current expenditure weight:
 
@@ -105,8 +104,6 @@ This chart covers 1991Q2 to 2026Q1, and it lines up well with Canada's known eco
 Chart 2 splits the index into its positive and negative parts instead of just showing the difference. It shows that the 2022 peak came from a real, broad jump in the positive side, reaching about 69% of the consumption basket, not from the negative side simply disappearing. This matters: in theory, the index could peak just because negative momentum became rare, without much real positive pressure. That's not what happened here, positive momentum genuinely took over. The same chart shows the opposite pattern in 1991-93, where negative momentum dominates instead. Seeing both extremes behave as mirror images is a good sign the index is measuring something real and consistent, not just a quirk of how it's built.
 
 
-
-
 ### 4.3. Robustness Checks
 
 An index built from several specification choices, such as the lag order in the reference autoregressive model or the number of consecutive quarters required to define momentum, could in principle depend heavily on those exact choices rather than reflecting a real economic signal. I therefore tested two variants, following the same checks [Lansing and Shapiro (2026)](https://www.frbsf.org/wp-content/uploads/wp2026-10.pdf) run in the original paper.
@@ -124,3 +121,11 @@ The first variant increases the lag order of the benchmark autoregressive model,
 The second variant increases the momentum threshold, moving from three consecutive quarters of same-signed shocks (the original version) to four consecutive quarters. The correlation here is even higher, at 0.922, with the same kind of close visual match, particularly strong during the 2021-2022 episode.
 
 Both results are consistent with what the original authors report for the United States: the index remains robust to the choice of AR lag order (whether 1, 3, or 12) and to the choice of momentum threshold (whether 2, 3, or 4 consecutive periods). In both cases tested here on Canadian data, changing these parameters does not fundamentally change the ISMI's behaviour, which strengthens confidence in the construction. 
+
+
+## 5. Conclusion
+
+## 6. References
+
+Lansing, Kevin J. and Adam Hale Shapiro. 2026. “Measuring Inflation Shock Momentum.” Federal Reserve Bank of San Francisco Working Paper 2026-10. https://doi.org/10.24148/wp2026-10
+

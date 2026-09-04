@@ -41,7 +41,7 @@ $$
 Before building the ISMI, I check that my own price index, built by summing the 101 categories, actually matches reality. To do this, I compare my own aggregate inflation against an inflation series Statistics Canada already publishes separately, in a different [Table 36-10-0106-01](https://doi.org/10.25318/3610010601-eng) (Gross domestic product price indexes, quarterly), which reports its own implicit price index for household consumption expenditure. This series comes from StatCan's own calculation so it acts as an independent reference point.
 The comparison is done Q4/Q4 meaning I measure annual inflation as the price change from the fourth quarter of one year to the fourth quarter of the next (for example, 2021Q4 to 2022Q4), rather than averaging across all four quarters. This is a standard way to turn quarterly data into a single annual inflation figure, and it lets me compare my own quarterly series and StatCan's on the exact same basis.
 
-#### 3.2.2 My calculation vs The Official StatCan Index
+##### 3.2.2.1 My calculation vs The Official StatCan Index
 
 ![Impulse Response](figures/Chart3.png)
 

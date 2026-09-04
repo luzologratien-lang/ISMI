@@ -1,4 +1,4 @@
-# ISMI
+# Inflation Shock Momentum Index
 
 ## 1. Introduction
 

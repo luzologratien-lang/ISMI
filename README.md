@@ -1,5 +1,9 @@
 # Inflation Shock Momentum Index
 
+**Author:** Gratien M. Luzolo
+
+**Date:** September
+
 ## 1. Introduction
 
 This project documents the construction of an Inflation Shock Momentum Index (ISMI) for Canada, adapted from the methodology developed by

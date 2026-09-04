@@ -110,26 +110,39 @@ Chart 2 splits the index into its positive and negative parts instead of just sh
 
 ### 4.3. Robustness Checks
 
-An index built from several specification choices, such as the lag order in the reference autoregressive model or the number of consecutive quarters required to define momentum, could in principle depend heavily on those exact choices rather than reflecting a real economic signal. I therefore tested two variants, following the same checks [Lansing and Shapiro (2026)](https://www.frbsf.org/wp-content/uploads/wp2026-10.pdf) run in the original paper.
+An index built from several specification choices, such as the lag order in the reference autoregressive model or the number of consecutive quarters required to define momentum, could in principle depend heavily on those exact choices rather than reflecting a real economic signal. I therefore tested two variants, following the same checks [Lansing and Shapiro (2026)](https://www.frbsf.org/wp-content/uploads/wp2026-10.pdf) run in the original paper. The reference model used throughout this study is an AR(1), with a single lag. The general version, allowing for $p$ lags, is:
+
+$$
+\pi_{i,s} = \alpha_i + \sum_{k=1}^{p} \rho_{k,i} \, \pi_{i,s-k} + \varepsilon_{i,s}
+$$
+
+where $p = 1$ is the original specification used to build the ISMI, and each $\rho_{k,i}$ is estimated by OLS on the same rolling 40-quarter window described earlier.
 
 #### 4.3.1. ISMI Under Different Trend-Model Specifications: AR(1) vs AR(4)
 
 ![Impulse Response](figures/Chart5.png)
 
-The first variant increases the lag order of the benchmark autoregressive model, moving from a single lag (AR(1), the original version) to four lags (AR(4)). The correlation between the two versions of the ISMI reaches 0.88, with very similar minimum and maximum values (-0.55 versus -0.61, and 0.65 versus 0.67). The two series follow the same path across the whole period, including during the 2021-2022 peak, where both versions reach nearly the same height in the same quarter.
+The first variant increases the lag order of this benchmark model, moving from $p = 1$ (the original version) to $p = 4$. The correlation between the two versions of the ISMI reaches 0.88, with very similar minimum and maximum values (-0.55 versus -0.61, and 0.65 versus 0.67). The two series follow the same path across the whole period, including during the 2021-2022 peak, where both versions reach nearly the same height in the same quarter.
 
 #### 4.3.2. ISMI Under Different Momentum Rules: 3 vs 4 Quarters
 
 ![Impulse Response](figures/Chart6.png)
 
-The second variant increases the momentum threshold, moving from three consecutive quarters of same-signed shocks (the original version) to four consecutive quarters. The correlation here is even higher, at 0.922, with the same kind of close visual match, particularly strong during the 2021-2022 episode.
+The second variant keeps the AR(1) model but increases the momentum threshold, moving from three consecutive quarters of same-signed shocks (the original version) to four consecutive quarters. The correlation here is even higher, at 0.922. The four-quarter version has a similar range to the original (minimum -0.52 versus -0.61, maximum 0.60 versus 0.67, mean -0.06 versus -0.04), and shows the same kind of close visual match, particularly strong during the 2021-2022 episode.
+
 
 Both results are consistent with what the original authors report for the United States: the index remains robust to the choice of AR lag order (whether 1, 3, or 12) and to the choice of momentum threshold (whether 2, 3, or 4 consecutive periods). In both cases tested here on Canadian data, changing these parameters does not fundamentally change the ISMI's behaviour, which strengthens confidence in the construction. 
 
+Both results are consistent with what the original authors report for the United States: the index remains robust to the choice of AR lag order (whether 1, 3, or 12) and to the choice of momentum threshold (whether 2, 3, or 4 consecutive periods). In both cases tested here on Canadian data, changing these parameters does not fundamentally change the ISMI's behaviour, which strengthens confidence in the construction.
 
 ## 5. Conclusion
+
+This project built an Inflation Shock Momentum Index (ISMI) for Canada, adapting Lansing and Shapiro's (2026) methodology to Statistics Canada's quarterly data on household consumption expenditure. The construction itself proved solid: resolving the hierarchy of 101 spending categories reproduces StatCan's official total exactly, and the aggregate inflation calculated from these categories closely matches the implicit price index StatCan publishes separately, across more than 40 years of data.
+
+Both robustness checks confirm that the index is not an artifact of an arbitrary parameter choice: changing the lag order of the autoregressive model (from 1 to 4 quarters) or the momentum threshold (from 3 to 4 consecutive quarters) produces versions of the ISMI strongly correlated with the original (0.88 and 0.922 respectively), with the same major historical episodes captured in each case.
+
+Overall, the Canadian ISMI faithfully reproduces the country's major known monetary episodes, without any parameter having been adjusted to force that outcome, and its construction withstands independent checks and alternative specification choices. Its usefulness, beyond simply observing inflation, nevertheless needs to be explored further.
 
 ## 6. References
 
 Lansing, Kevin J. and Adam Hale Shapiro. 2026. “Measuring Inflation Shock Momentum.” Federal Reserve Bank of San Francisco Working Paper 2026-10. https://doi.org/10.24148/wp2026-10
-
